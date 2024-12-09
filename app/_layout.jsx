@@ -20,15 +20,22 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider
-      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY} // Make sure this is correctly set in your environment variables
     >
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="{tabs}"></Stack>
-      </Stack>
+      {/* Render authenticated stack or login screen */}
+      <SignedIn>
+        <Stack>
+          <Stack.Screen
+            name="(tabs)" // Ensure this matches your tabs layout file
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </SignedIn>
+      <SignedOut>
+        <LoginScreen /> {/* Show login screen if user is not signed in */}
+      </SignedOut>
     </ClerkProvider>
   );
 }
