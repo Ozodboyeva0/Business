@@ -8,9 +8,9 @@ import LoginScreen from "../components/LoginScreen";
 export default function RootLayout() {
   // Load custom fonts
   const [fontsLoaded] = useFonts({
-    outfitbold: require("../assets/fonts/Outfit-Bold.ttf"),
-    outfitmedium: require("../assets/fonts/Outfit-Medium.ttf"),
-    " outfitregular": require("../assets/fonts/Outfit-Regular.ttf"),
+    "outfit-bold": require("../assets/fonts/Outfit-Bold.ttf"),
+    "outfit-medium": require("../assets/fonts/Outfit-Medium.ttf"),
+    " outfit-regular": require("../assets/fonts/Outfit-Regular.ttf"),
   });
 
   // Show loading indicator while fonts are loading
