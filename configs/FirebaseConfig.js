@@ -1,4 +1,4 @@
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
@@ -11,18 +11,18 @@ const firebaseConfig = {
   measurementId: "G-PV4P9249GH",
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function testFirestore() {
-  try {
-    const querySnapshot = await getDocs(collection(db, "Slider"));
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, "=>", doc.data());
-    });
-  } catch (error) {
-    console.error("Error connecting to Firestore:", error);
-  }
-}
+// async function testFirestore() {
+//   try {
+//     const querySnapshot = await getDocs(collection(db, "Slider"));
+//     querySnapshot.forEach((doc) => {
+//       console.log(doc.id, "=>", doc.data());
+//     });
+//   } catch (error) {
+//     console.error("Error connecting to Firestore:", error);
+//   }
+// }
 
-testFirestore();
+// testFirestore();

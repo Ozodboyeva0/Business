@@ -6,18 +6,15 @@ import { db } from "../../configs/FirebaseConfig";
 export default function Slider() {
   const [sliderList, setSliderList] = useState([]);
 
-  useEffect(() => {
-    getSliderList();
-  }, []);
+  useEffect(() => {}, []);
 
   const getSliderList = async () => {
-    setSliderList([]);
     const q = query(collection(db, "Slider"));
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
       console.log(doc.data());
-      setSliderList((prev) => [...prev, doc.data()]);
+      setSliderList(([prev]) => [...prev, doc.data()]);
     });
   };
 
@@ -29,8 +26,8 @@ export default function Slider() {
       <FlatList
         data={sliderList}
         horizontal={true}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
+        style={{ paddingLeft: 20 }}
+        renderItem={({ item, index }) => (
           <Image
             source={{ uri: item.imageUrl }}
             style={{
