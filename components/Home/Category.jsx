@@ -49,7 +49,7 @@ export default function Category() {
             fontFamily: "outfit-bold",
           }}
         >
-          Category
+          Categori
         </Text>
         <Text style={{ color: Colors.PRIMARY, fontFamily: "outfit-medium" }}>
           View All
@@ -65,7 +65,7 @@ export default function Category() {
         renderItem={({ item }) => (
           <CategoryItem
             category={item}
-            onCategoryPress={() => router.push(`./businesslist/${item.name}`)}
+            onCategoryPress={() => router.push(`/businesslist/${item.name}`)}
           />
         )}
         contentContainerStyle={{ marginLeft: 20 }} // Padding for content
