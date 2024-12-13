@@ -6,34 +6,63 @@ import { db } from "../../configs/FirebaseConfig";
 export default function Slider() {
   const [sliderList, setSliderList] = useState([]);
 
-  useEffect(() => {}, []);
-
   const getSliderList = async () => {
-    const q = query(collection(db, "Slider"));
-    const querySnapshot = await getDocs(q);
+    try {
+      console.log("---------------------working------------------");
+      const q = query(collection(db, "Slider"));
+      const querySnapshot = await getDocs(q);
 
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data());
-      setSliderList(([prev]) => [...prev, doc.data()]);
-    });
+      const sliderData = [];
+      querySnapshot.forEach((doc) => {
+        console.log("data:", doc.data());
+        sliderData.push(doc.data());
+      });
+
+      return sliderData;
+    } catch (error) {
+      console.error("Error fetching slider data:", error);
+      return [];
+    }
   };
+
+  useEffect(() => {
+    const loadSliderList = async () => {
+      const sliders = await getSliderList(); // Fetch slider data
+      setSliderList(sliders); // Update state with fetched data
+    };
+    loadSliderList();
+  }, []);
+
+  // useEffect(() => {
+  //   getSliderList()
+  // }, [])
 
   return (
     <View>
-      <Text style={{ fontFamily: "outfit-bold", fontSize: 20, padding: 20 }}>
-        #Special For You
+      <Text
+        style={{
+          fontFamily: "outfit-bold",
+          fontSize: 20,
+          paddingLeft: 20,
+          paddingTop: 20,
+          marginBottom: 5,
+        }}
+      >
+        #Special for You
       </Text>
       <FlatList
         data={sliderList}
         horizontal={true}
+        showsHorizontalScrollIndicator={false}
         style={{ paddingLeft: 20 }}
-        renderItem={({ item, index }) => (
+        keyExtractor={(_, index) => index.toString()}
+        renderItem={({ item }) => (
           <Image
-            source={{ uri: item.imageUrl }}
+            source={{ uri: item?.imageUrl }}
             style={{
               width: 300,
-              height: 160,
-              marginRight: 10,
+              height: 100,
+              marginRight: 15,
               borderRadius: 15,
             }}
           />

@@ -8,7 +8,7 @@ export default function Header() {
   const { user } = useUser();
   return (
     <View
-      style={{ padding: 20, paddingTop: 40, backgroundColor: Colors.PRIMARY }}
+      style={{ padding: 10, paddingTop: 10, backgroundColor: Colors.PRIMARY }}
     >
       <View
         style={{
@@ -16,8 +16,8 @@ export default function Header() {
           flexDirection: "row",
           alignItems: "center",
           gap: 10,
-          borderBottomLeftRadius: 10,
-          borderBottomRightRadius: 10,
+          borderBottomLeftRadius: 90,
+          borderBottomRightRadius: 90,
         }}
       >
         <Image
@@ -51,12 +51,12 @@ export default function Header() {
           alignItems: "center",
           backgroundColor: "#ffff",
           padding: 10,
-          marginVertical: 10,
-          marginTop: 15,
+          marginVertical: 7,
+          marginTop: 10,
           borderRadius: 8,
         }}
       >
-        <Feather name="search" size={24} color={Colors.PRIMARY} />
+        <Feather name="search" size={18} color={Colors.PRIMARY} />
         <TextInput
           placeholder="Search..."
           style={{ fontFamily: "outfit-bold", fontSize: 16 }}
