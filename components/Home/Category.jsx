@@ -1,76 +1,101 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  Alert,
+  Button,
 } from "react-native";
-import { Colors } from "../../constants/Colors"; // Ensure Colors is defined
-import { collection, getDocs, query } from "firebase/firestore"; // Ensure Firestore is configured
-import { db } from "../../configs/FirebaseConfig"; // Ensure FirebaseConfig is valid
-import CategoryItem from "./CategoryItem"; // Ensure CategoryItem works
+import { Colors } from "../../constants/Colors";
+import { collection, getDocs, query } from "firebase/firestore";
+import { db } from "../../configs/FirebaseConfig";
+import CategoryItem from "./CategoryItem";
 import { useRouter } from "expo-router";
 
-export default function Category() {
-  const [categoryList, setCategoryList] = useState([]); // State to hold categories
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const router = useRouter(); // Initialize router from expo-router
+export default function Category({ explore = false, onCategorySelect }) {
+  const [categoryList, setCategoryList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
-    getCategoryList(); // Fetch categories on mount
+    getCategoryList();
   }, []);
 
-  // Function to fetch category list from Firestore
   const getCategoryList = async () => {
     try {
-      console.log("Fetching categories...");
-      const q = query(collection(db, "Category")); // Query the "Category" collection
+      setIsLoading(true);
+      const q = query(collection(db, "Category"));
       const querySnapshot = await getDocs(q);
-
-      // Map categories with IDs
       const categories = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
-      console.log("Categories fetched:", categories);
-      setCategoryList(categories); // Update state with categories
+      setCategoryList(categories);
     } catch (error) {
       console.error("Error fetching categories:", error);
+      setError("Failed to load categories. Please try again later.");
+      Alert.alert(
+        "Error",
+        "Could not fetch categories. Please check your connection and try again."
+      );
     } finally {
-      setIsLoading(false); // Stop loading spinner
+      setIsLoading(false);
     }
   };
 
+  const onCategoryPressHandler = useCallback(
+    (item) => {
+      if (!explore) {
+        router.push(`/businesslist/${item.name}`);
+      } else {
+        onCategorySelect(item.name);
+      }
+    },
+    [explore, router, onCategorySelect]
+  );
+
   return (
     <View style={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Category</Text>
-        <Text style={styles.viewAllText}>View All</Text>
-      </View>
+      {!explore && (
+        <View style={styles.header}>
+          <Text style={styles.headerText}>Category</Text>
+          <Text
+            style={styles.viewAllText}
+            onPress={() => console.log("View All pressed")}
+          >
+            View All
+          </Text>
+        </View>
+      )}
 
-      {/* Conditional Rendering: Loader or Category List */}
       {isLoading ? (
         <ActivityIndicator
           size="large"
           color={Colors.PRIMARY}
           style={styles.loader}
         />
+      ) : error ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <Button
+            title="Retry"
+            onPress={getCategoryList}
+            color={Colors.PRIMARY}
+          />
+        </View>
       ) : categoryList.length > 0 ? (
         <FlatList
-          data={categoryList} // Array of categories
-          horizontal // Enable horizontal scrolling
-          showsHorizontalScrollIndicator={false} // Hide scroll indicator
-          keyExtractor={(item) => item.id} // Use document ID as key
+          data={categoryList}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <CategoryItem
               category={item}
-              onCategoryPress={() => {
-                console.log("Pressed category:", item.name);
-                router.push(`/businesslist/${item.name}`);
-              }}
+              onCategoryPress={() => onCategoryPressHandler(item)}
             />
           )}
           contentContainerStyle={styles.flatListContainer}
@@ -82,18 +107,16 @@ export default function Category() {
   );
 }
 
-// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingHorizontal: 20,
   },
   header: {
-    display: "flex",
-    justifyContent: "space-between",
     flexDirection: "row",
-    padding: 20,
-    marginTop: 10,
+    justifyContent: "space-between",
+    marginVertical: 10,
   },
   headerText: {
     fontSize: 20,
@@ -107,12 +130,21 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   flatListContainer: {
-    marginLeft: 20,
+    marginTop: 10,
   },
   noCategoriesText: {
     textAlign: "center",
     marginTop: 50,
     fontSize: 16,
     color: "#777",
+  },
+  errorContainer: {
+    alignItems: "center",
+    marginTop: 50,
+  },
+  errorText: {
+    fontSize: 16,
+    color: "red",
+    marginBottom: 10,
   },
 });

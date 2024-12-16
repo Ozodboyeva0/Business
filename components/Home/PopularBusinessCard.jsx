@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
 import { Colors } from "../../constants/Colors";
+import { useRouter } from "expo-router";
 
 export default function PopularBusinessCard({ business }) {
+  const router = useRouter();
   if (!business) {
     return null; // Render nothing if no business prop is passed
   }
@@ -11,7 +13,10 @@ export default function PopularBusinessCard({ business }) {
   const { ImageUrl, name, adress } = business;
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      onPress={() => router.push("/businessdetail/" + business.id)}
+      style={styles.card}
+    >
       <Image
         source={{ uri: ImageUrl || "https://via.placeholder.com/200" }} // Fallback image
         style={styles.image}
@@ -48,7 +53,7 @@ export default function PopularBusinessCard({ business }) {
           <Text style={styles.category}>{business.category}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

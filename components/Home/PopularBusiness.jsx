@@ -19,7 +19,7 @@ export default function PopularBusiness() {
 
     const businesses = [];
     querySnapshot.forEach((doc) => {
-      businesses.push(doc.data()); // Collect data into an array
+      businesses.push({ id: doc.id, ...doc.data() }); // Collect data into an array
     });
     setBusinessList(businesses); // Set business list after collecting all data
   };

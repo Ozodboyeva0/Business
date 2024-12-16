@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useLocalSearchParams } from "expo-router";
@@ -30,7 +36,7 @@ export default function BusinessListByCategory() {
       console.log("Fetching businesses for category:", category); // Debug log
 
       const q = query(
-        collection(db, "businessList"),
+        collection(db, "BusinessList"),
         where("category", "==", category) // Ensure exact match
       );
 
@@ -40,13 +46,13 @@ export default function BusinessListByCategory() {
         console.log("No businesses found for this category."); // Debug log
       }
 
-      const businesses = querySnapshot.docs.map((doc) => ({
+      const business = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      console.log("Fetched businesses:", businesses); // Debug log
-      setBusinessList(businesses);
+      console.log("Fetched businesses:", business); // Debug log
+      setBusinessList(business);
     } catch (error) {
       console.error("Error fetching businesses:", error);
     } finally {
@@ -65,12 +71,12 @@ export default function BusinessListByCategory() {
   return (
     <View style={styles.container}>
       {isLoading ? (
-        <Text style={styles.loadingText}>Loading...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       ) : businessList.length > 0 ? (
         <FlatList
           data={businessList}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <BusinessListCard business={item} />}
+          renderItem={({ item }) => <BusinessListCard business={item} />} // Pass "business" as prop
           contentContainerStyle={styles.listContainer}
         />
       ) : (
